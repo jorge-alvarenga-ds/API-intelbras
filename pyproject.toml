@@ -1,0 +1,54 @@
+[project]
+name = "api-intelbras"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "jorgealvarenga",email = "jorgeluizalvarenga@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13,<4"
+dependencies = [
+    "fastapi (>=0.116.0,<0.117.0)",
+    "uvicorn (>=0.35.0,<0.36.0)",
+    "fastapi-users (>=14.0.1,<15.0.0)",
+    "sqlalchemy (>=2.0.41,<3.0.0)",
+    "databases (>=0.9.0,<0.10.0)",
+    "alembic (>=1.16.3,<2.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.4.1"
+pytest-cov = "^6.2.1"
+taskipy = "^1.14.1"
+ruff = "^0.12.2"
+httpx = "^0.28.1"
+
+[tool.ruff]
+line-length = 79 # Tamanho máximo de caracter na linha
+extend-exclude = ['migrations']
+
+[tool.ruff.lint] # Selecionar os principais check do lint
+preview = true
+select = ['I', 'F', 'E', 'W', 'PL', 'PT']
+
+[tool.ruff.format] # Confirgução da formatação ruff já vem bem configurado
+preview = true
+quote-style = 'single'
+
+[tool.pytest.ini_options] # configura a pasta o pytest
+pythonpath = "."
+addopts = '-p no:warnings'
+
+[tool.taskipy.tasks] # Cria task de comando para agilizar os comandos
+lint = 'ruff check . && ruff check . --diff'
+format = 'ruff check . --fix && ruff format .'
+run = 'fastapi dev fast_zero/app.py'
+pre_test = 'task lint'
+test = 'pytest -s -x --cov=fast_zero -vv'
+post_test = 'coverage html'
+
