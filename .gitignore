@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+*.log
+*.env
+.venv/
+.mypy_cache/
+.pytest_cache/
+.DS_Store
+node_modules/
+.env
+dist/
+*.log
+.env
+*.log
+node_modules/
+.env
+/home/jorgealvarenga/projeto/API-intelbras/.gitignore
