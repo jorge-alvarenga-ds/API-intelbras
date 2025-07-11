@@ -9,7 +9,7 @@ from sqlalchemy import select
 
 from api_intelbras.core.settings import Settings
 from api_intelbras.database.session import get_session
-from api_intelbras.models import User  # ajuste conforme sua estrutura
+from api_intelbras.models.user import User  # ajuste conforme sua estrutura
 
 from sqlalchemy.ext.asyncio import AsyncSession
 

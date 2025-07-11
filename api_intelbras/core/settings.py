@@ -1,23 +1,17 @@
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine, AsyncSession
-from sqlalchemy.orm import sessionmaker
-from typing import AsyncGenerator
-from fastapi import Depends
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from api_intelbras.core import settings
+  
+  
 
-# Criação do engine
-engine: AsyncEngine = create_async_engine(settings.DATABASE_URL, echo=True)
+class Settings(BaseSettings):
 
-# Criação do sessionmaker
-async_session_maker = sessionmaker(
-    bind=engine,
-    class_=AsyncSession,
-    expire_on_commit=False,
-    autocommit=False,
-    autoflush=False,
-)
+    model_config = SettingsConfigDict(
+        env_file='.env', env_file_encoding='utf-8'
+        )
+    API_VERSION: str
+    DATABASE_URL: str
+    SECRET_KEY: str
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
 
-# Função para injetar sessão nas rotas com Depends
-async def get_session() -> AsyncGenerator[AsyncSession, None]:
-    async with async_session_maker() as session:
-        yield session
+settings = Settings()
