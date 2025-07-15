@@ -11,3 +11,7 @@ class UserLogin(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+class CredentialLogin(BaseModel):
+    client_id: EmailStr
+    client_secret: str

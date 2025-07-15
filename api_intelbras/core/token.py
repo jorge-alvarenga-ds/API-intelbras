@@ -14,7 +14,9 @@ from api_intelbras.models.user import User  # ajuste conforme sua estrutura
 from sqlalchemy.ext.asyncio import AsyncSession
 
 settings = Settings()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='auth/token')
+tokenUrl = settings.API_VERSION + "/auth/token"
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=tokenUrl)
 
 def create_access_token(data: dict):
     to_encode = data.copy()
@@ -58,3 +60,11 @@ async def get_current_user(
         raise credentials_exception
 
     return result
+
+def is_admin(user: User = Depends(get_current_user)):
+    if user.role != "admin":
+        raise HTTPException(
+            status_code=HTTPStatus.UNAUTHORIZED,
+            detail="Acesso restrito a administradores."
+        )
+    return user
