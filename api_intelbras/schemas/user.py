@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
-from typing import Literal
+from typing import Literal , Optional , List
 
 class Message(BaseModel):
     message: str
@@ -10,6 +10,7 @@ class UserSchema(BaseModel):
     email: EmailStr
     password: str
     role: Literal["admin", "user"] = "user"
+    credenciais: Optional[List[str]] = []
 
 
 class UserPublic(BaseModel):
@@ -18,6 +19,7 @@ class UserPublic(BaseModel):
     email: EmailStr
     model_config = ConfigDict(from_attributes=True)
     role: Literal["admin", "user"] = "user"
+    credenciais: Optional[List[str]] = []
     
 
 

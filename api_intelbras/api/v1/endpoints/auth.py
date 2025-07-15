@@ -21,20 +21,33 @@ OAuth2Form = Annotated[OAuth2PasswordRequestForm, Depends()]
 Session = Annotated[AsyncSession, Depends(get_session)]
 
 @router.post('/token', response_model=Token)
-async def login_for_access_token(form_data: OAuth2Form, session: Session):
+async def login_for_access_token(form_data: OAuth2Form, 
+                                 session: Session):
     user = await session.scalar(select(User).where(User.email == form_data.username))
-
-    if not user:
-        raise HTTPException(
-            status_code=HTTPStatus.BAD_REQUEST,
-            detail='Incorrect email or password',
-        )
-    if not verify_password(form_data.password, user.password):
-        raise HTTPException(
-            status_code=HTTPStatus.BAD_REQUEST,
-            detail='Incorrect email or password',
-        )
-
+    if form_data.grant_type == "password":
+        if not user:
+            raise HTTPException(
+                status_code=HTTPStatus.BAD_REQUEST,
+                detail='Usuário ou senha incorreto.',
+            )
+        if not verify_password(form_data.password, user.password):
+            raise HTTPException(
+                status_code=HTTPStatus.BAD_REQUEST,
+                detail='Usuário ou senha incorreto.',
+            )
+    if form_data.grant_type == "client_credentials":
+        if not user:
+            raise HTTPException(
+                status_code=HTTPStatus.BAD_REQUEST,
+                detail='Usuário ou Credencial incorreto.',
+            )
+        credenciais =user.credenciais or []
+        if not form_data.client_secret in credenciais:
+            raise HTTPException(
+                status_code=HTTPStatus.BAD_REQUEST,
+                detail='Usuário ou Credencial incorreto.',
+            )
+        
     access_token = create_access_token(data={'sub': user.email})
 
     return {'access_token': access_token, 'token_type': 'bearer'}
